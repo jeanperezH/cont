@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 
+
 mix.styles([
    'resources/assets/carpeta/css/bootstrap-grid.min.css',
    'resources/assets/carpeta/css/bootstrap-reboot.min.css',

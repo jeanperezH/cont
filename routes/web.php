@@ -29,3 +29,7 @@ Route::get('/Salida','SalidaController@index');
 Route::post('/Salida/registrar','SalidaController@store');
 //Route::get('/Salida/listarPdf/{id}','SalidaController@listarPdf')->name('entradas_pdf');
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
