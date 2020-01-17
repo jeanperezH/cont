@@ -9,5 +9,7 @@
   <template v-if="menu==2">
     <Salida></Salida>
   </template>
-  
+  <template v-if="menu==3">
+    <User></User>
+  </template>
 @endsection

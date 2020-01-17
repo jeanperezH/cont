@@ -14,17 +14,23 @@
         <li @click="menu=2" class="nav-item active">
             <a class="nav-link" href="#"><i class="fas fa-arrow-circle-up" > </i> SALIDA</a>
         </li>
+        <li @click="menu=3" class="nav-item active">
+            <a class="nav-link" href="#"><i class="fas fa-users" > </i> USUARIOS</a>
+        </li>
       </ul>
       
       <ul class="nav navbar-nav mr-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-user-shield"></i> Administrador
+                    <i class="fas fa-user-shield"></i> {{Auth::user()->usuario}}
                 </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#"><i class="fas fa-user-edit"></i> Cuenta</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    <a class="dropdown-item" href="{{ route('logout') }}"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+                        {{ csrf_field() }}
+                    </form>
                 </div>
             </li>
         </ul>
