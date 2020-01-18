@@ -19,5 +19,6 @@ const app = new Vue({
     el: '#app',
     data :{
         menu:0,
+        ruta: 'http://localhost/sistema_contable_login/public',
        }
 });

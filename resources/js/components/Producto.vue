@@ -71,7 +71,11 @@
             <template v-else-if="listado==0">
                 <div class="card-body">
                         <div class="form-group row border">
-                            
+                            <div class="col-md-12">
+                                <button type="button" class="close" @click="ocultarDetalle()" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for=""><h5>Producto</h5></label>
@@ -275,6 +279,7 @@
 
 <script>
     export default {
+        props : ['ruta'],
         data(){
             return{
                 producto_id:0,
@@ -335,7 +340,7 @@
         methods: {
             listarProducto(page,buscar,criterio){
                 let me = this;
-                var url='/Producto?page=' + page+'&buscar=' +buscar+'&criterio='+criterio;
+                var url= this.ruta + '/Producto?page=' + page+'&buscar=' +buscar+'&criterio='+criterio;
                 axios.get(url).then(function(response){
                     var respuesta = response.data;
                     me.arrayProducto=respuesta.productos.data;
@@ -359,7 +364,7 @@
                 }
 
                 let me = this;
-                axios.post('/Producto/registrar' ,{
+                axios.post(this.ruta + '/Producto/registrar' ,{
                     'producto':this.producto,
                     
                     'periodo':this.periodo,
@@ -380,10 +385,11 @@
                 })
             },
             cargarPdf(){
-                window.open('http://localhost:8000/Producto/listarPdf','_blank');
+                //window.open('http://localhost:8000/Producto/listarPdf','_blank');
+                window.open(this.ruta + '/Producto/listarPdf','_blank');
             },
             ReporteInventarioPdf(id){
-                window.open('http://localhost:8000/Entrada/listarPdf/'+ id +','+'_blank');
+                window.open(this.ruta + '/Entrada/listarPdf/'+ id +','+'_blank');
             },
             actualizarProducto(){
                 if(this.validarActualizacion()){
@@ -391,7 +397,7 @@
                 }
 
                 let me = this;
-                axios.put('/Producto/actualizar' ,{
+                axios.put(this.ruta + '/Producto/actualizar' ,{
                     'producto':this.producto,
                     
                     'id':this.producto_id
@@ -414,6 +420,10 @@
                 if(!this.producto) this.errorMostrarMsjProducto.push("Ingrese producto");
                 //if(!this.stock) this.errorMostrarMsjProducto.push("Ingrese la cantidad del producto");
                 if(!this.periodo||!this.ruc||!this.apellidos_nombres_dr||!this.establecimiento||!this.codigo_existencia||!this.tipo_existencia||!this.descripcion||!this.unidad_medida||!this.metodo_valuacion) this.errorMostrarMsjProducto.push("Complete todos los detalles");
+                if(this.ruc){
+                  if(isNaN(this.ruc)) this.errorMostrarMsjProducto.push("El RUC debe estar compuesto solo por números");
+                  else if(this.ruc.length>11) this.errorMostrarMsjProducto.push("El RUC debe tener máximo 11 dígitos");
+                }
                 if(this.errorMostrarMsjProducto.length) this.errorProducto=1;
                 return this.errorProducto;
             },

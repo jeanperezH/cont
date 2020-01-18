@@ -42,6 +42,14 @@ class ProductoController extends Controller
         $productos = Producto::select('id','producto','stock')->orderBy('producto','asc')->get();
         return ['productos'=>$productos];
     }
+    public function selectProductoSalida(Request $request){
+        if (!$request->ajax()) return redirect('/');
+
+        $productos = Producto::select('id','producto','stock')
+        ->where('stock','>','0')
+        ->orderBy('producto','asc')->get();
+        return ['productos'=>$productos];
+    }
 
     public function store(Request $request)
     {

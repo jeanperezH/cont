@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary" class="nav">
     
     <div class="container">
-        <a @click="menu=0" class="navbar-brand " href="/">Inventario de Productos</a>
+        <a @click="menu=0" class="navbar-brand " href="#">Inventario de Productos</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

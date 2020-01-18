@@ -1,15 +1,15 @@
 @extends('principal')
 @section('contenido')
   <template v-if="menu==0">
-    <Producto></Producto>
+    <Producto :ruta="ruta"></Producto>
   </template>
   <template v-if="menu==1">
-    <Entrada></Entrada>
+    <Entrada :ruta="ruta"></Entrada>
   </template>
   <template v-if="menu==2">
-    <Salida></Salida>
+    <Salida :ruta="ruta"></Salida>
   </template>
   <template v-if="menu==3">
-    <User></User>
+    <User :ruta="ruta"></User>
   </template>
 @endsection

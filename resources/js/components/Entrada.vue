@@ -4,11 +4,12 @@
             
             <div class="container-fluid">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Ingresos
+                    <i class="fa fa-align-justify"></i> Entradas
                     <!--<button type="button" @click="abrirModal('producto','registrar')" class="btn btn-primary" >-->
                     <button type="button" @click="mostrarDetalle()" class="btn btn-primary">
                         <i class="fas fa-plus-circle"></i>&nbsp;Nuevo
                     </button>
+                    
                 </div>
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
@@ -26,6 +27,7 @@
                                     </select>
                                     <input type="text" v-model="buscar" @keyup.enter="listarEntrada(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarEntrada(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -81,11 +83,16 @@
                     <template v-else>
                     <div class="card-body">
                         <div class="form-group row border">
+                            <div class="col-md-12">
+                                <button type="button" class="close" @click="ocultarDetalle()" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Producto <span style="color:red;" v-show="id_producto==0">(*Seleccione)</span></label>
                                     <select class="form-control" v-model="id_producto" >
-                                        <option v-for="productos in arrayProducto" :key="productos.id" :value="productos.id" v-text="productos.producto"></option>
+                                        <option v-for="productos in arrayProducto" :key="productos.id" :value="productos.id" v-text="productos.producto +' -->stock('+productos.stock+')'"></option>
                                     </select>                                     
                                 </div>
                             </div>
@@ -308,7 +315,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12">
-                                <button type="button" @click="ocultarDetalle()" class="btn btn-secondary">Cerrar</button>
+                                <button type="button" @click="ocultarDetalle()" class="btn btn-danger">Cerrar</button>
                                 <button type="button" class="btn btn-primary" @click="registrarEntrada()">Registrar Compra</button>
                             </div>
                         </div>
@@ -325,6 +332,7 @@
 <script>
     
     export default {
+        props : ['ruta'],
         data (){
             return {
                 entrada_id: 0,
@@ -415,7 +423,7 @@
         methods : {
             listarEntrada (page,buscar,criterio){
                 let me=this;
-                var url= '/Entrada?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
+                var url= this.ruta + '/Entrada?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
                     me.arrayEntrada = respuesta.entradas.data;
@@ -464,12 +472,12 @@
                 }
                        
             },
-            cargarPdf(){
-                window.open('http://localhost:8000/Entrada/listarPdf','_blank');
-            },
+            /*cargarPdf(){
+                window.open(this.ruta + '/Entrada/listarPdf','_blank');
+            },*/
             selectProducto(){
                 let me = this;
-                var url='/Producto/selectProducto';
+                var url=this.ruta + '/Producto/selectProducto';
                 axios.get(url).then(function(response){
                     var respuesta = response.data;
                     me.arrayProducto=respuesta.productos;
@@ -483,7 +491,7 @@
                 
                 let me = this;
 
-                axios.post('/Entrada/registrar',{
+                axios.post(this.ruta + '/Entrada/registrar',{
                     'id_producto': this.id_producto,
                     'fecha': this.fecha,
                     'tipo_comprobante' : this.tipo_comprobante,
@@ -523,10 +531,22 @@
                 if (!this.fecha) this.errorMostrarMsjEntrada.push("Ingrese la fecha");
                 if (this.tipo_comprobante=='') this.errorMostrarMsjEntrada.push("Seleccione el tipo comprobante");
                 if (!this.serie) this.errorMostrarMsjEntrada.push("Ingrese la serie del comprobante");
+                if(this.serie){
+                    if(this.serie.length<4) this.errorMostrarMsjEntrada.push("La serie del comprobante debe contener mínimo 4 dígitos");
+                }
                 if (!this.numero) this.errorMostrarMsjEntrada.push("Ingrese el número de comprobante");
+                if(this.numero){
+                  if(isNaN(this.numero)) this.errorMostrarMsjEntrada.push("El número de comprobante solo debe estar compuesto por números");
+                }
+                if (!this.tipo_operacion) this.errorMostrarMsjEntrada.push("Seleccione el tipo de operación");
                 if (!this.cantidad) this.errorMostrarMsjEntrada.push("Ingrese la cantidad");
+                if(this.cantidad){
+                  if(isNaN(this.cantidad)) this.errorMostrarMsjEntrada.push("Ingrese la cantidad en números");
+                }
                 if (!this.costo_unitario) this.errorMostrarMsjEntrada.push("Ingrese el costo unitario");
-                //if (this.arrayDetalle.length<=0) this.errorMostrarMsjEntrada.push("Ingrese detalles");
+                if(this.cantidad){
+                  if(isNaN(this.costo_unitario)) this.errorMostrarMsjEntrada.push("Ingrese la costo unitario en números");
+                }
 
                 if (this.errorMostrarMsjEntrada.length) this.errorEntrada = 1;
 

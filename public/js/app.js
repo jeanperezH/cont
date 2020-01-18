@@ -2256,7 +2256,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['ruta'],
   data: function data() {
     return {
       entrada_id: 0,
@@ -2353,7 +2361,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     listarEntrada: function listarEntrada(page, buscar, criterio) {
       var me = this;
-      var url = '/Entrada?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+      var url = this.ruta + '/Entrada?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.arrayEntrada = respuesta.entradas.data;
@@ -2398,12 +2406,13 @@ __webpack_require__.r(__webpack_exports__);
         me.costo_total = 0.0; //me.cambio='0';
       }
     },
-    cargarPdf: function cargarPdf() {
-      window.open('http://localhost:8000/Entrada/listarPdf', '_blank');
-    },
+
+    /*cargarPdf(){
+        window.open(this.ruta + '/Entrada/listarPdf','_blank');
+    },*/
     selectProducto: function selectProducto() {
       var me = this;
-      var url = '/Producto/selectProducto';
+      var url = this.ruta + '/Producto/selectProducto';
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.arrayProducto = respuesta.productos;
@@ -2413,7 +2422,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     registrarEntrada: function registrarEntrada() {
       var me = this;
-      axios.post('/Entrada/registrar', {
+      axios.post(this.ruta + '/Entrada/registrar', {
         'id_producto': this.id_producto,
         'fecha': this.fecha,
         'tipo_comprobante': this.tipo_comprobante,
@@ -2449,9 +2458,29 @@ __webpack_require__.r(__webpack_exports__);
       if (!this.fecha) this.errorMostrarMsjEntrada.push("Ingrese la fecha");
       if (this.tipo_comprobante == '') this.errorMostrarMsjEntrada.push("Seleccione el tipo comprobante");
       if (!this.serie) this.errorMostrarMsjEntrada.push("Ingrese la serie del comprobante");
+
+      if (this.serie) {
+        if (this.serie.length < 4) this.errorMostrarMsjEntrada.push("La serie del comprobante debe contener mínimo 4 dígitos");
+      }
+
       if (!this.numero) this.errorMostrarMsjEntrada.push("Ingrese el número de comprobante");
+
+      if (this.numero) {
+        if (isNaN(this.numero)) this.errorMostrarMsjEntrada.push("El número de comprobante solo debe estar compuesto por números");
+      }
+
+      if (!this.tipo_operacion) this.errorMostrarMsjEntrada.push("Seleccione el tipo de operación");
       if (!this.cantidad) this.errorMostrarMsjEntrada.push("Ingrese la cantidad");
-      if (!this.costo_unitario) this.errorMostrarMsjEntrada.push("Ingrese el costo unitario"); //if (this.arrayDetalle.length<=0) this.errorMostrarMsjEntrada.push("Ingrese detalles");
+
+      if (this.cantidad) {
+        if (isNaN(this.cantidad)) this.errorMostrarMsjEntrada.push("Ingrese la cantidad en números");
+      }
+
+      if (!this.costo_unitario) this.errorMostrarMsjEntrada.push("Ingrese el costo unitario");
+
+      if (this.cantidad) {
+        if (isNaN(this.costo_unitario)) this.errorMostrarMsjEntrada.push("Ingrese la costo unitario en números");
+      }
 
       if (this.errorMostrarMsjEntrada.length) this.errorEntrada = 1;
       return this.errorEntrada;
@@ -2811,7 +2840,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['ruta'],
   data: function data() {
     return {
       producto_id: 0,
@@ -2881,7 +2915,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     listarProducto: function listarProducto(page, buscar, criterio) {
       var me = this;
-      var url = '/Producto?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+      var url = this.ruta + '/Producto?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.arrayProducto = respuesta.productos.data;
@@ -2903,7 +2937,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var me = this;
-      axios.post('/Producto/registrar', {
+      axios.post(this.ruta + '/Producto/registrar', {
         'producto': this.producto,
         'periodo': this.periodo,
         'ruc': this.ruc,
@@ -2923,10 +2957,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     cargarPdf: function cargarPdf() {
-      window.open('http://localhost:8000/Producto/listarPdf', '_blank');
+      //window.open('http://localhost:8000/Producto/listarPdf','_blank');
+      window.open(this.ruta + '/Producto/listarPdf', '_blank');
     },
     ReporteInventarioPdf: function ReporteInventarioPdf(id) {
-      window.open('http://localhost:8000/Entrada/listarPdf/' + id + ',' + '_blank');
+      window.open(this.ruta + '/Entrada/listarPdf/' + id + ',' + '_blank');
     },
     actualizarProducto: function actualizarProducto() {
       if (this.validarActualizacion()) {
@@ -2934,7 +2969,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var me = this;
-      axios.put('/Producto/actualizar', {
+      axios.put(this.ruta + '/Producto/actualizar', {
         'producto': this.producto,
         'id': this.producto_id
       }).then(function (response) {
@@ -2956,6 +2991,11 @@ __webpack_require__.r(__webpack_exports__);
       if (!this.producto) this.errorMostrarMsjProducto.push("Ingrese producto"); //if(!this.stock) this.errorMostrarMsjProducto.push("Ingrese la cantidad del producto");
 
       if (!this.periodo || !this.ruc || !this.apellidos_nombres_dr || !this.establecimiento || !this.codigo_existencia || !this.tipo_existencia || !this.descripcion || !this.unidad_medida || !this.metodo_valuacion) this.errorMostrarMsjProducto.push("Complete todos los detalles");
+
+      if (this.ruc) {
+        if (isNaN(this.ruc)) this.errorMostrarMsjProducto.push("El RUC debe estar compuesto solo por números");else if (this.ruc.length > 11) this.errorMostrarMsjProducto.push("El RUC debe tener máximo 11 dígitos");
+      }
+
       if (this.errorMostrarMsjProducto.length) this.errorProducto = 1;
       return this.errorProducto;
     },
@@ -3353,7 +3393,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['ruta'],
   data: function data() {
     return {
       salida_id: 0,
@@ -3450,7 +3496,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     listarSalida: function listarSalida(page, buscar, criterio) {
       var me = this;
-      var url = '/Salida?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+      var url = this.ruta + '/Salida?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.arraySalida = respuesta.salidas.data;
@@ -3495,12 +3541,9 @@ __webpack_require__.r(__webpack_exports__);
         me.costo_total = 0.0; //me.cambio='0';
       }
     },
-    cargarPdf: function cargarPdf() {
-      window.open('http://localhost:8000/Entrada/listarPdf', '_blank');
-    },
     selectProducto: function selectProducto() {
       var me = this;
-      var url = '/Producto/selectProducto';
+      var url = this.ruta + '/Producto/selectProductoSalida';
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.arrayProducto = respuesta.productos;
@@ -3510,7 +3553,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     registrarSalida: function registrarSalida() {
       var me = this;
-      axios.post('/Salida/registrar', {
+      axios.post(this.ruta + '/Salida/registrar', {
         'id_producto': this.id_producto,
         'fecha': this.fecha,
         'tipo_comprobante': this.tipo_comprobante,
@@ -3546,9 +3589,30 @@ __webpack_require__.r(__webpack_exports__);
       if (!this.fecha) this.errorMostrarMsjEntrada.push("Ingrese la fecha");
       if (this.tipo_comprobante == '') this.errorMostrarMsjEntrada.push("Seleccione el tipo comprobante");
       if (!this.serie) this.errorMostrarMsjEntrada.push("Ingrese la serie del comprobante");
+
+      if (this.serie) {
+        if (this.serie.length < 4) this.errorMostrarMsjEntrada.push("La serie del comprobante debe contener mínimo 4 dígitos");
+      }
+
       if (!this.numero) this.errorMostrarMsjEntrada.push("Ingrese el número de comprobante");
+
+      if (this.numero) {
+        if (isNaN(this.numero)) this.errorMostrarMsjEntrada.push("El número de comprobante solo debe estar compuesto por números");
+      }
+
+      if (!this.tipo_operacion) this.errorMostrarMsjEntrada.push("Seleccione el tipo de operación");
       if (!this.cantidad) this.errorMostrarMsjEntrada.push("Ingrese la cantidad");
-      if (!this.costo_unitario) this.errorMostrarMsjEntrada.push("Ingrese el costo unitario"); //if (this.arrayDetalle.length<=0) this.errorMostrarMsjEntrada.push("Ingrese detalles");
+
+      if (this.cantidad) {
+        if (isNaN(this.cantidad)) this.errorMostrarMsjEntrada.push("Ingrese la cantidad en números");
+      }
+
+      if (!this.costo_unitario) this.errorMostrarMsjEntrada.push("Ingrese el costo unitario");
+
+      if (this.cantidad) {
+        if (isNaN(this.costo_unitario)) this.errorMostrarMsjEntrada.push("Ingrese la costo unitario en números");
+      } //if (this.arrayDetalle.length<=0) this.errorMostrarMsjEntrada.push("Ingrese detalles");
+
 
       if (this.errorMostrarMsjEntrada.length) this.errorEntrada = 1;
       return this.errorEntrada;
@@ -3723,6 +3787,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['ruta'],
   data: function data() {
     return {
       user_id: 0,
@@ -3783,7 +3848,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     listarUsuario: function listarUsuario(page, buscar, criterio) {
       var me = this;
-      var url = '/User?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+      var url = this.ruta + '/User?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.arrayUser = respuesta.users.data;
@@ -3805,7 +3870,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var me = this;
-      axios.post('/User/registrar', {
+      axios.post(this.ruta + '/User/registrar', {
         'usuario': this.usuario,
         'password': this.password
       }).then(function (response) {
@@ -3821,7 +3886,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var me = this;
-      axios.put('/User/actualizar', {
+      axios.put(this.ruta + '/User/actualizar', {
         'usuario': this.usuario,
         'password': this.password,
         'id': this.user_id
@@ -3898,7 +3963,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         if (result.value) {
           var me = _this;
-          axios.put('/User/desactivar', {
+          axios.put(_this.ruta + '/User/desactivar', {
             'id': id
           }).then(function (response) {
             me.listarUsuario(1, '', 'usuario');
@@ -3928,7 +3993,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         if (result.value) {
           var me = _this2;
-          axios.put('/User/activar', {
+          axios.put(_this2.ruta + '/User/activar', {
             'id': id
           }).then(function (response) {
             me.listarUsuario(1, '', 'nombre');
@@ -40114,7 +40179,7 @@ var render = function() {
     _c("div", { staticClass: "container-fluid" }, [
       _c("div", { staticClass: "card-header" }, [
         _c("i", { staticClass: "fa fa-align-justify" }),
-        _vm._v(" Ingresos\n            "),
+        _vm._v(" Entradas\n            "),
         _vm._v(" "),
         _c(
           "button",
@@ -40419,6 +40484,26 @@ var render = function() {
             : [
                 _c("div", { staticClass: "card-body" }, [
                   _c("div", { staticClass: "form-group row border" }, [
+                    _c("div", { staticClass: "col-md-12" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "close",
+                          attrs: { type: "button", "aria-label": "Close" },
+                          on: {
+                            click: function($event) {
+                              return _vm.ocultarDetalle()
+                            }
+                          }
+                        },
+                        [
+                          _c("span", { attrs: { "aria-hidden": "true" } }, [
+                            _vm._v("×")
+                          ])
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
                     _c("div", { staticClass: "col-md-6" }, [
                       _c("div", { staticClass: "form-group" }, [
                         _c("label", [
@@ -40473,7 +40558,12 @@ var render = function() {
                               key: productos.id,
                               domProps: {
                                 value: productos.id,
-                                textContent: _vm._s(productos.producto)
+                                textContent: _vm._s(
+                                  productos.producto +
+                                    " -->stock(" +
+                                    productos.stock +
+                                    ")"
+                                )
                               }
                             })
                           }),
@@ -41870,7 +41960,7 @@ var render = function() {
                       _c(
                         "button",
                         {
-                          staticClass: "btn btn-secondary",
+                          staticClass: "btn btn-danger",
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
@@ -42375,6 +42465,26 @@ var render = function() {
             ? [
                 _c("div", { staticClass: "card-body" }, [
                   _c("div", { staticClass: "form-group row border" }, [
+                    _c("div", { staticClass: "col-md-12" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "close",
+                          attrs: { type: "button", "aria-label": "Close" },
+                          on: {
+                            click: function($event) {
+                              return _vm.ocultarDetalle()
+                            }
+                          }
+                        },
+                        [
+                          _c("span", { attrs: { "aria-hidden": "true" } }, [
+                            _vm._v("×")
+                          ])
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
                     _vm._m(1),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-8" }, [
@@ -43505,6 +43615,26 @@ var render = function() {
             : [
                 _c("div", { staticClass: "card-body" }, [
                   _c("div", { staticClass: "form-group row border" }, [
+                    _c("div", { staticClass: "col-md-12" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "close",
+                          attrs: { type: "button", "aria-label": "Close" },
+                          on: {
+                            click: function($event) {
+                              return _vm.ocultarDetalle()
+                            }
+                          }
+                        },
+                        [
+                          _c("span", { attrs: { "aria-hidden": "true" } }, [
+                            _vm._v("×")
+                          ])
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
                     _c("div", { staticClass: "col-md-6" }, [
                       _c("div", { staticClass: "form-group" }, [
                         _c("label", [
@@ -43559,7 +43689,12 @@ var render = function() {
                               key: productos.id,
                               domProps: {
                                 value: productos.id,
-                                textContent: _vm._s(productos.producto)
+                                textContent: _vm._s(
+                                  productos.producto +
+                                    " -->stock(" +
+                                    productos.stock +
+                                    ")"
+                                )
                               }
                             })
                           }),
@@ -44956,7 +45091,7 @@ var render = function() {
                       _c(
                         "button",
                         {
-                          staticClass: "btn btn-secondary",
+                          staticClass: "btn btn-danger",
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
@@ -57810,7 +57945,8 @@ Vue.component('User', __webpack_require__(/*! ./components/User.vue */ "./resour
 var app = new Vue({
   el: '#app',
   data: {
-    menu: 0
+    menu: 0,
+    ruta: 'http://localhost/sistema_contable_login/public'
   }
 });
 
@@ -58285,7 +58421,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\sistema_contable\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\sistema_contable_login\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })

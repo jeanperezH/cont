@@ -122,6 +122,7 @@
 
 <script>
     export default {
+        props : ['ruta'],
         data (){
             return {
                 user_id: 0,
@@ -179,7 +180,7 @@
         methods : {
             listarUsuario (page,buscar,criterio){
                 let me=this;
-                var url= '/User?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
+                var url=this.ruta + '/User?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
                     me.arrayUser = respuesta.users.data;
@@ -203,7 +204,7 @@
                 
                 let me = this;
 
-                axios.post('/User/registrar',{
+                axios.post(this.ruta + '/User/registrar',{
                     'usuario': this.usuario,
                     'password': this.password,
 
@@ -221,7 +222,7 @@
                 
                 let me = this;
 
-                axios.put('/User/actualizar',{
+                axios.put(this.ruta + '/User/actualizar',{
                     'usuario': this.usuario,
                     'password': this.password,
                     'id': this.user_id
@@ -298,7 +299,7 @@
                 if (result.value) {
                     let me = this;
 
-                    axios.put('/User/desactivar',{
+                    axios.put(this.ruta + '/User/desactivar',{
                         'id': id
                     }).then(function (response) {
                         me.listarUsuario(1,'','usuario');
@@ -337,7 +338,7 @@
                 if (result.value) {
                     let me = this;
 
-                    axios.put('/User/activar',{
+                    axios.put(this.ruta + '/User/activar',{
                         'id': id
                     }).then(function (response) {
                         me.listarUsuario(1,'','nombre');
